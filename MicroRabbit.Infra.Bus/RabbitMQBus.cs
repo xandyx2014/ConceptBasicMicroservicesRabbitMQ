@@ -19,7 +19,7 @@ namespace MicroRabbit.Infra.Bus
         private readonly List<Type> _eventTypes;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public RabbitMQBus( IMediator mediator, IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQSettings> rabbitMQSettings)
+        public RabbitMQBus(IMediator mediator, IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQSettings> rabbitMQSettings)
         {
             _mediator = mediator;
             _serviceScopeFactory = serviceScopeFactory;
@@ -30,6 +30,7 @@ namespace MicroRabbit.Infra.Bus
 
         public void Publish<T>(T @event) where T : Event
         {
+            // configuraciones los valores del servidor
             var factory = new ConnectionFactory
             {
                 HostName = _rabbitMQSettings.Hostname,
@@ -43,7 +44,7 @@ namespace MicroRabbit.Infra.Bus
 
                 var eventName = @event.GetType().Name;
 
-                channel.QueueDeclare(eventName, false, false, false, null);
+                channel.QueueDeclare(eventName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
                 var message = JsonConvert.SerializeObject(@event);
 
@@ -56,6 +57,7 @@ namespace MicroRabbit.Infra.Bus
 
         public Task SendCommand<T>(T command) where T : Command
         {
+            // utilizamos la library MediaTr
             return _mediator.Send(command);
         }
 
@@ -121,8 +123,9 @@ namespace MicroRabbit.Infra.Bus
             {
                 await ProcessEvent(eventName, message).ConfigureAwait(false);
             }
-            catch(Exception ex) { 
-            
+            catch (Exception ex)
+            {
+
             }
         }
 
@@ -148,8 +151,8 @@ namespace MicroRabbit.Infra.Bus
 
                 }
 
-                 
-            
+
+
             }
 
         }

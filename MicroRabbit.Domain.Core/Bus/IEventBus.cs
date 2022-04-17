@@ -3,7 +3,8 @@ using MicroRabbit.Domain.Core.Events;
 
 namespace MicroRabbit.Domain.Core.Bus
 {
-    public interface  IEventBus
+    // Imterface para setear los comandos
+    public interface IEventBus
     {
         Task SendCommand<T>(T command) where T : Command;
 

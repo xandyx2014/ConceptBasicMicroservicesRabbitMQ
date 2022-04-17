@@ -118,3 +118,5 @@ channel.BasicConsume("BasicQueue", true, consumer);
 
 
 ```
+## RabbitMQ
+RabbitMQ es uno de los event bus disponibles que tenemos

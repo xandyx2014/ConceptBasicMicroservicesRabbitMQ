@@ -23,6 +23,8 @@ namespace MicroRabbit.Infra.IoC
 {
     public static class DependencyContainer
     {
+
+        //  Encargado de realizar todas las inyecciones de dependencias
         public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
 
@@ -32,13 +34,14 @@ namespace MicroRabbit.Infra.IoC
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
             //Domain Bus
-            services.AddSingleton<IEventBus, RabbitMQBus>(sp => { 
+            services.AddSingleton<IEventBus, RabbitMQBus>(sp =>
+            {
                 var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
                 var optionsFactory = sp.GetService<IOptions<RabbitMQSettings>>();
-                return new RabbitMQBus(sp.GetService<IMediator>(), scopeFactory, optionsFactory );
+                return new RabbitMQBus(sp.GetService<IMediator>(), scopeFactory, optionsFactory);
             });
 
-            
+
 
 
             //Application Services
